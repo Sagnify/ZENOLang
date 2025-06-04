@@ -1,4 +1,4 @@
-from commands import runner
+from modules import runner
 import sys
 
 class ZENOLangInterpreter:

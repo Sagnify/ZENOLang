@@ -1,5 +1,5 @@
 import re
-from commands.evaluator.main import NaturalLanguageEvaluator
+from .evaluator.main import NaturalLanguageEvaluator
 
 evaluator = NaturalLanguageEvaluator()
 evaluate_expression = evaluator.evaluate

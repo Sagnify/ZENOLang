@@ -1,4 +1,4 @@
-from commands import runner, condition_checker
+from . import runner, condition_checker
 # from commands.operators import operators
 
 def evaluate(line, variables):

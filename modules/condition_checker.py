@@ -1,5 +1,5 @@
 import re
-from commands.evaluator.main import NaturalLanguageEvaluator
+from .evaluator.main import NaturalLanguageEvaluator
 
 
 def check_condition(expr: str, variables: dict) -> bool:

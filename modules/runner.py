@@ -1,4 +1,4 @@
-from commands import let, say, ask, if_else, while_
+from . import let, say, ask, if_else, while_
 
 def get_indent_level(line):
     # Convert tabs to spaces (4 spaces per tab)
