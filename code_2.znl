@@ -1,0 +1,31 @@
+say "Enter a positive number:"
+ask n
+
+while n less 1 then
+    say n
+    say "Invalid input, please enter a positive number:"
+    ask n
+
+say "Ascending pattern:"
+repeat counting i from 1 to n
+    let line be ""
+    if i is even then
+        repeat counting j from 1 to i
+            let line be line + "#"
+    else
+        repeat counting j from 1 to i
+            let line be line + "*"
+    say line
+
+say "Descending pattern:"
+repeat counting i from n to 1 step -1
+    let line be ""
+    if i is even then
+        repeat counting j from 1 to i
+            let line be line + "#"
+    else
+        repeat counting j from 1 to i
+            let line be line + "*"
+    say line
+
+say "Done!"

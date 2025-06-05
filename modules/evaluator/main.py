@@ -75,7 +75,8 @@ if __name__ == "__main__":
 #         "'Hi ' + name + '!'",
 #         "'Hello' + ' ' + 'World!'",
 #         "'Hello' contains 'ell'"
-            '"Checking if " + x + " is divisible by " + y'
+            '"Checking if " + x + " is divisible by " + y',
+            'x less 0'
 
     ]
     

@@ -1,4 +1,4 @@
-from . import let, say, ask, if_else, while_
+from . import let, say, ask, if_else, while_, for_
 
 def get_indent_level(line):
     # Convert tabs to spaces (4 spaces per tab)
@@ -13,24 +13,19 @@ def find_matching_else(lines, if_line_index, if_indent):
         if not line or line.startswith('#') or line.startswith('//'):
             i += 1
             continue
-            
+
         current_indent = get_indent_level(lines[i])
-        
+
         # If we hit same indentation level
-        if current_indent == if_indent:
-            if line == 'else':
-                return i
-            else:
-                # Hit another statement at same level, no else
-                return None
-        # If we hit lower indentation, no else
-        elif current_indent < if_indent:
+        if current_indent == if_indent and line == 'else':
+            return i
+        elif current_indent == if_indent or current_indent < if_indent:
+            # Hit another statement at same level, no else
             return None
-            
         i += 1
     return None
 
-def run_script(lines, variables):
+def run_script(lines, variables):  # sourcery skip: low-code-quality
     i = 0
 
     while i < len(lines):
@@ -62,27 +57,27 @@ def run_script(lines, variables):
             elif stripped.startswith('if '):
                 condition = if_else.evaluate(stripped, variables)
                 # print(f"  IF condition evaluated to {condition}")
-                
+
                 # Find all lines in the if block
                 if_block = []
                 else_block = []
                 j = i + 1
-                
+
                 # Collect if block
                 while j < len(lines):
                     current_line = lines[j].strip()
                     if not current_line or current_line.startswith('#') or current_line.startswith('//'):
                         j += 1
                         continue
-                        
+
                     current_indent = get_indent_level(lines[j])
-                    
+
                     if current_indent <= indent:
                         break
-                    
+
                     if_block.append(lines[j])
                     j += 1
-                
+
                 # Check if there's an else at the same indentation level
                 else_index = find_matching_else(lines, i, indent)
                 if else_index is not None:
@@ -93,32 +88,23 @@ def run_script(lines, variables):
                         if not current_line or current_line.startswith('#') or current_line.startswith('//'):
                             j += 1
                             continue
-                            
+
                         current_indent = get_indent_level(lines[j])
-                        
+
                         if current_indent <= indent:
                             break
-                        
+
                         else_block.append(lines[j])
                         j += 1
-                    
-                    # Skip to after the else block
-                    i = j
-                else:
-                    # No else, skip to after if block
-                    i = j
-                
+
+                # Skip to after the else block
+                i = j
                 # Execute the appropriate block
                 if condition:
                     if if_block:
                         run_script(if_block, variables)
-                else:
-                    if else_block:
-                        run_script(else_block, variables)
-                    elif not if_block:  # No if block and no else block
-                        # print("  Skipping IF block due to condition False")
-                        pass
-
+                elif else_block:
+                    run_script(else_block, variables)
             elif stripped == 'else':
                 # This should not be reached if our logic is correct
                 print(f"Unexpected 'else' at line {i+1} - this should be handled by if statement")
@@ -128,32 +114,61 @@ def run_script(lines, variables):
                 # Collect the while block
                 while_block = []
                 j = i + 1
-                
+
                 while j < len(lines):
                     current_line = lines[j].strip()
                     if not current_line or current_line.startswith('#') or current_line.startswith('//'):
                         j += 1
                         continue
-                        
+
                     current_indent = get_indent_level(lines[j])
-                    
+
                     if current_indent <= indent:
                         break
-                    
+
                     while_block.append(lines[j])
                     j += 1
-                
+
                 # Execute while loop
                 while while_.evaluate(stripped, variables):
                     if while_block:
                         run_script(while_block, variables)
-                
+
+                i = j
+            elif stripped.startswith('repeat counting '):
+                indent = get_indent_level(lines[i])
+                # Parse loop header
+                var_name, start, end, step = for_.evaluate(stripped, variables)
+
+                # Collect the repeat block
+                repeat_block = []
+                j = i + 1
+                while j < len(lines):
+                    current_line = lines[j].strip()
+                    if not current_line or current_line.startswith('#') or current_line.startswith('//'):
+                        j += 1
+                        continue
+
+                    current_indent = get_indent_level(lines[j])
+                    if current_indent <= indent:
+                        break
+
+                    repeat_block.append(lines[j])
+                    j += 1
+
+                # Execute the repeat loop
+                step_sign = 1 if step > 0 else -1
+                for val in range(start, end + step_sign, step):
+                    variables[var_name] = val
+                    if repeat_block:
+                        run_script(repeat_block, variables)
+
                 i = j
 
             else:
                 print(f"Unknown command at line {i+1}: {stripped}")
                 i += 1
-                
+
         except Exception as e:
             print(f"Error: {e}")
             return  # Stop execution on error
