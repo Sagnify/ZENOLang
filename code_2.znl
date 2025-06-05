@@ -29,3 +29,28 @@ repeat counting i from n to 1 step -1
     say line
 
 say "Done!"
+
+
+#string operations
+let str be "Sagnik"
+say str
+let len be length str
+say len
+let rev be reverse str
+say rev
+
+#palindrome checker
+say "Enter a word:"
+ask word
+
+let rev be reverse word
+let len be length word
+
+say "Original word: " + word
+say "Reversed word: " + rev
+say "Length of word: " + len
+
+if word equals rev then
+    say "This is a palindrome!"
+else
+    say "This is not a palindrome."

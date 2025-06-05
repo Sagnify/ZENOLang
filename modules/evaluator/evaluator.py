@@ -65,6 +65,16 @@ class ExpressionEvaluator:
         # print("Contains '+':", '+' in expression)
         # print("Contains 'add' or 'plus':", any(op in expression.lower() for op in ['add', 'plus']))
         
+        tokens = expression.split()
+
+        if len(tokens) == 2:
+            # print("Evaluating unary operation:", expression)
+            op, operand = tokens
+            # print("Operator:", op, "Operand:", operand)
+            if op in self.operators:
+                value = self._evaluate_without_brackets(operand, variables)
+                # print("Value:", value)
+                return self.operators[op](value)
         
         # Handle quoted strings
         if self.parser.is_quoted_string(expression):
@@ -114,6 +124,7 @@ class ExpressionEvaluator:
         return self._handle_binary_operation(expression, variables)
     
     def _handle_string_concatenation(self, expression: str, variables: Dict[str, Any]) -> str:
+        # sourcery skip: remove-unused-enumerate
         """Handle string concatenation with +"""
         parts = self.parser.split_outside_quotes(expression, '+')
         # print("Split parts:", parts)

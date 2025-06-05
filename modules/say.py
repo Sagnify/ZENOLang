@@ -1,6 +1,6 @@
-from .evaluator.main import NaturalLanguageEvaluator
+from .evaluator.context import get_evaluator
 
-evaluator = NaturalLanguageEvaluator()
+evaluator = get_evaluator()
 evaluate_expression = evaluator.evaluate
 
 def execute(line, variables):

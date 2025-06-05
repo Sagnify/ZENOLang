@@ -1,9 +1,11 @@
 import re
 from .evaluator.main import NaturalLanguageEvaluator
+from .evaluator.context import get_evaluator
+
+evaluator = get_evaluator()
 
 
 def check_condition(expr: str, variables: dict) -> bool:
-    evaluator = NaturalLanguageEvaluator()
     evaluate_expression = evaluator.evaluate
     expr = expr.strip()
 
@@ -63,7 +65,7 @@ def split_by_logical(expr: str, logical_op: str):
     return parts
 
 
-def is_safe_to_split(expr: str, logical_op: str):
+def is_safe_to_split(expr: str, logical_op: str):  # sourcery skip: while-to-for
     in_quote = None
     i = 0
     while i < len(expr):
