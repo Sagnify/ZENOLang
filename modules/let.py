@@ -1,10 +1,11 @@
 import re
 from .evaluator.main import NaturalLanguageEvaluator
+from . import function_handler
 
 evaluator = NaturalLanguageEvaluator()
 evaluate_expression = evaluator.evaluate
 
-def execute(line, variables):
+def execute(line, variables, run_script_func=None):
     parts = line[4:].split(" be ")
     if len(parts) != 2:
         raise SyntaxError("Invalid syntax in 'let' command")
@@ -18,6 +19,20 @@ def execute(line, variables):
     elif value_str.startswith('"') and value_str.endswith('"'):
         # print(f"Assigning string literal to variable '{var_name}': {value_str}")
         value = evaluate_expression(value_str, variables)
+    elif value_str.startswith('call '):
+        # Handle function call
+        if run_script_func is None:
+            raise Exception("Function calls in 'let' require run_script_func to be passed")
+        
+        try:
+            func_name, args = function_handler.parse_function_call(value_str)
+            if function_handler.function_exists(func_name):
+                value = function_handler.execute_function(func_name, args, variables, run_script_func, evaluate_expression)
+                # print(f"Function '{func_name}' returned: {value}")
+            else:
+                raise Exception(f"Function '{func_name}' is not defined")
+        except Exception as e:
+            raise Exception(f"Error calling function in 'let' statement: {e}")
     else:
         # print(f"Evaluating expression for variable '{var_name}': {value_str}")
         value = evaluate_expression(value_str, variables)

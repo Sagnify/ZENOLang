@@ -1,4 +1,9 @@
+
 from . import let, say, ask, if_else, while_, for_
+from .exception_case import BreakLoop
+from . import function_handler
+from .function_handler import ReturnValue
+
 
 def get_indent_level(line):
     # Convert tabs to spaces (4 spaces per tab)
@@ -25,16 +30,14 @@ def find_matching_else(lines, if_line_index, if_indent):
         i += 1
     return None
 
-def run_script(lines, variables):  # sourcery skip: low-code-quality
+def run_script(lines, variables):  # sourcery skip: use-contextlib-suppress
     i = 0
+    return_value = None
 
     while i < len(lines):
         line = lines[i].rstrip('\n')
-        # print(f"Raw line: {repr(line)}")
-
         indent = get_indent_level(line)
         stripped = line.strip()
-        # print(f"[Line {i+1}] Indent={indent} Content='{stripped}'")
 
         # Skip empty lines and comments
         if not stripped or stripped.startswith(('#', '//')):
@@ -43,7 +46,7 @@ def run_script(lines, variables):  # sourcery skip: low-code-quality
 
         try:
             if stripped.startswith('let '):
-                let.execute(stripped, variables)
+                let.execute(stripped, variables, run_script)
                 i += 1
 
             elif stripped.startswith('say '):
@@ -54,9 +57,13 @@ def run_script(lines, variables):  # sourcery skip: low-code-quality
                 ask.execute(stripped, variables)
                 i += 1
 
+            elif stripped.startswith('return'):
+                # Handle return statement using function_handler
+                # You'll need to pass your expression evaluator here
+                function_handler.handle_return_statement(stripped, variables)
+
             elif stripped.startswith('if '):
                 condition = if_else.evaluate(stripped, variables)
-                # print(f"  IF condition evaluated to {condition}")
 
                 # Find all lines in the if block
                 if_block = []
@@ -97,16 +104,22 @@ def run_script(lines, variables):  # sourcery skip: low-code-quality
                         else_block.append(lines[j])
                         j += 1
 
-                # Skip to after the else block
-                i = j
                 # Execute the appropriate block
                 if condition:
                     if if_block:
-                        run_script(if_block, variables)
+                        try:
+                            run_script(if_block, variables)
+                        except (BreakLoop, ReturnValue):
+                            raise
                 elif else_block:
-                    run_script(else_block, variables)
+                    try:
+                        run_script(else_block, variables)
+                    except (BreakLoop, ReturnValue):
+                        raise
+
+                i = j
+
             elif stripped == 'else':
-                # This should not be reached if our logic is correct
                 print(f"Unexpected 'else' at line {i+1} - this should be handled by if statement")
                 i += 1
 
@@ -129,15 +142,22 @@ def run_script(lines, variables):  # sourcery skip: low-code-quality
                     while_block.append(lines[j])
                     j += 1
 
-                # Execute while loop
-                while while_.evaluate(stripped, variables):
-                    if while_block:
-                        run_script(while_block, variables)
+                try:
+                    while while_.evaluate(stripped, variables):
+                        if while_block:
+                            try:
+                                run_script(while_block, variables)
+                            except BreakLoop:
+                                break
+                            except ReturnValue:
+                                raise
+                except BreakLoop:
+                    pass
 
                 i = j
+
             elif stripped.startswith('repeat counting '):
                 indent = get_indent_level(lines[i])
-                # Parse loop header
                 var_name, start, end, step = for_.evaluate(stripped, variables)
 
                 # Collect the repeat block
@@ -156,46 +176,56 @@ def run_script(lines, variables):  # sourcery skip: low-code-quality
                     repeat_block.append(lines[j])
                     j += 1
 
-                # Execute the repeat loop
-                step_sign = 1 if step > 0 else -1
-                for val in range(start, end + step_sign, step):
-                    variables[var_name] = val
-                    if repeat_block:
-                        run_script(repeat_block, variables)
+                try:
+                    step_sign = 1 if step > 0 else -1
+                    for val in range(start, end + step_sign, step):
+                        variables[var_name] = val
+                        if repeat_block:
+                            try:
+                                run_script(repeat_block, variables)
+                            except BreakLoop:
+                                break
+                            except ReturnValue:
+                                raise
+                except BreakLoop:
+                    pass
 
                 i = j
+
+            elif stripped.startswith('stop'):
+                raise BreakLoop()
+            
+            # Function definition handling
+            elif function_handler.is_function_definition(stripped):
+                func_name, params = function_handler.parse_function_definition(stripped)
+                func_body, next_i = function_handler.collect_function_body(lines, i)
+                function_handler.register_function(func_name, params, func_body)
+                i = next_i
+                continue
+
+            # Function call handling
+            elif function_handler.is_function_call(stripped):
+                func_name, args = function_handler.parse_function_call(stripped)
+                if function_handler.function_exists(func_name):
+                    # Execute function - pass run_script and optionally your expression evaluator
+                    # Example: ret_val = function_handler.execute_function(func_name, args, variables, run_script, your_expression_module.evaluate)
+                    ret_val = function_handler.execute_function(func_name, args, variables, run_script)
+                    # Handle return value if needed (e.g., for assignment)
+                else:
+                    print(f"Function '{func_name}' is not defined")
+                i += 1
+                continue
 
             else:
                 print(f"Unknown command at line {i+1}: {stripped}")
                 i += 1
 
+        except BreakLoop:
+            raise
+        except ReturnValue:
+            raise
         except Exception as e:
             print(f"Error: {e}")
-            return  # Stop execution on error
+            return
 
-# Example usage:
-# if __name__ == "__main__":
-#     # Example script with indentation-based blocks
-#     script = """
-# let x = 5
-# if x > 3
-#     say "x is greater than 3"
-#     let y = 10
-#     if y > 8
-#         say "y is also greater than 8"
-#     else
-#         say "y is not greater than 8"
-# else
-#     say "x is not greater than 3"
-
-# let counter = 0
-# while counter < 3
-#     say "Counter is: " + str(counter)
-#     let counter = counter + 1
-    
-# say "Done!"
-# """
-    
-#     variables = {}
-#     lines = script.strip().split('\n')
-#     run_script(lines, variables)
+    return return_value

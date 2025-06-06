@@ -1,7 +1,7 @@
 # ZENOLang — A Gentle Educational Programming Language
 
-> *"Where human words become code,  
-> and learning blooms with every line."*  
+> *"Where human words become code,
+> and learning blooms with every line."*
 
 ---
 
@@ -15,55 +15,100 @@ Inspired by the rhythms of everyday language, ZENOLang lets you write code that 
 
 ## What’s Done So Far
 
-- **Core Interpreter** built in Python:
-  - Natural language style commands like `let x be 5`, `say "Hello, world!"`, `while condition then ...`
-  - Support for variables, strings, numbers, and boolean values
-  - Basic arithmetic and string concatenation with clear operator rules
-  - Conditional statements (`if-else`)
-  - Loops (`while`) with nested blocks using indentation
-  - Error handling with meaningful feedback on syntax and runtime issues
+### ✅ Core Interpreter Built in Python
 
-- **Expression Evaluator:**
-  - Handles arithmetic, comparison, and logical expressions
-  - Supports natural language keywords (`adds`, `minus`, `more than`, `less than`, etc.)
-  - Robust parsing of complex expressions with brackets and operator precedence
-  - True/False booleans handled in intuitive English form (`true`, `false`)
+* Natural language style commands like:
 
-- **Sample Programs Included:**
-  - Divisibility checker using loops and conditions
-  - Factorial calculator demonstrating recursion and loops
-  - Conditional branching with nested expressions and variables
+  * `let x be 5`
+  * `say "Hello, world!"`
+  * `while condition then ...`
+  * `if condition then ... else ...`
+  * `ask "Prompt" into variable`
+  * `stop` (to break loops)
+* Indentation-based block parsing
+* Handles variables, numbers, booleans, and strings
+* Prints numbers automatically as strings during `say` or concatenation
 
-- **User-friendly output:**
-  - `say` command prints meaningful messages combining literals and evaluated expressions
-  - Concatenation and variable interpolation supported naturally
+### ✅ Expression Evaluator
+
+* Supports:
+
+  * Arithmetic operations (`adds`, `minus`, `multiplies`, `divides`, `modulus`)
+  * Comparisons (`is`, `isn't`, `more`, `less`, `greater`, `less than or equal`, etc.)
+  * Logical operations (`and`, `or`, `not`)
+  * Parentheses for grouping and precedence
+* Evaluates natural-English expressions easily
+
+### ✅ Conditionals and Loops
+
+* `if-else` structure with support for nesting
+* `while` loops with break using `stop`
+* `repeat counting from X to Y with step Z` loop (similar to for-loop)
+
+### ✅ Functions Support
+
+* Define functions with:
+
+  ```zeno
+  define greet with name
+      say "Hello, " + name + "!"
+  ```
+* Call with:
+
+  ```zeno
+  call greet with "Sagnik"
+  ```
+* Support for:
+
+  * Multiple parameters (comma-separated)
+  * Return values using `return`
+  * Recursive functions
+  * Assigning function call result to variables
+
+### ✅ String Utility Functions
+
+* `length of <string>` returns string length
+* `if <string> contains <substring>` evaluates inclusion
+
+### ✅ Sample Programs Include:
+
+* Divisibility checker using loops
+* Factorial (both iterative and recursive)
+* Grade evaluator using `if-else` and function call
+* Arithmetic function composition (e.g., `add`, `factorial`, etc.)
+
+### ✅ User-Friendly Output
+
+* `say` command prints readable, conversational output
+* Concatenation and mixed-type messages handled naturally
 
 ---
 
 ## Why ZENOLang?
 
-- **Designed for learners:** Avoids intimidating syntax, uses simple English phrases to express logic
-- **Encourages experimentation:** Easy to write and modify code to explore programming fundamentals
-- **Clear feedback:** Errors and runtime messages crafted to teach as well as inform
-- **Extensible:** Built modularly to allow adding new commands and expressions
+* **Designed for learners:** Avoids intimidating syntax, uses simple English phrases to express logic
+* **Encourages experimentation:** Easy to write and modify code to explore programming fundamentals
+* **Clear feedback:** Errors and runtime messages crafted to teach as well as inform
+* **Extensible:** Built modularly to allow adding new commands and expressions
 
 ---
 
 ## What’s Next?
 
-- Step-through execution and debugging tools  
-- Enhanced input handling for interactive programs  
-- Richer control structures and user-defined functions  
-- Visual and GUI integrations for real-time learning  
-- Comprehensive tutorial scripts and learning modules
+* List/array support and indexing
+* File/module imports
+* Enhanced error handling (undefined variables, bad types)
+* Step-through execution and debugging tools
+* Visual and GUI integrations
+* Interactive input modules and small games
 
 ---
 
 ## Getting Started
 
-1. Clone the repository  
-2. Install Python 3.x if you don’t have it  
-3. Run the interpreter on your `.znl` scripts  
+1. Clone the repository
+2. Install Python 3.x if you don’t have it
+3. Run the interpreter on your `.znl` scripts
 4. Explore and create programs using natural language commands!
 
 ---
@@ -88,3 +133,24 @@ while found is 0 then
     if divisor more number then
         say "No divisor found (number is prime)"
         let found be 1
+```
+
+---
+
+```zeno
+// Function Example
+
+define factorial with n
+    if n less 2 then
+        return 1
+    else
+        let prev be n minus 1
+        let result be call factorial with prev
+        return n multiplies result
+
+let number be 5
+let fact be call factorial with number
+say "Factorial of " + number + " is " + fact
+```
+
+---

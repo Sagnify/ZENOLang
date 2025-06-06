@@ -9,12 +9,12 @@ def evaluate(line, variables):
     # Extract condition part between "while" and "then"
     condition_part = line.strip()[6:].split(" then")[0].strip()
 
-    if condition_checker.check_condition(condition_part, variables) is None:
-        print(f"Invalid condition: {condition_part}")
-    elif condition_checker.check_condition(condition_part, variables) is False:
-        print(f"Condition evaluated to False: {condition_part}")
-    elif condition_checker.check_condition(condition_part, variables) is True:
-        print(f"Condition evaluated to True: {condition_part}")
+    # if condition_checker.check_condition(condition_part, variables) is None:
+    #     print(f"Invalid condition: {condition_part}")
+    # elif condition_checker.check_condition(condition_part, variables) is False:
+    #     print(f"Condition evaluated to False: {condition_part}")
+    # elif condition_checker.check_condition(condition_part, variables) is True:
+    #     print(f"Condition evaluated to True: {condition_part}")
 
     # Pass condition to the condition checker
     return condition_checker.check_condition(condition_part, variables)

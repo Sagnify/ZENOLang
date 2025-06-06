@@ -54,15 +54,15 @@ def evaluate_expression(expression: str, variables: Dict[str, Any] = None) -> An
 
 
 # Example usage
-if __name__ == "__main__":
-    # Test cases
-    variables = {
-        "x": 5,
-        "y": 10,
-        "z": 3,
-        "flag": False,
-        "name": "Sagnik"
-    }
+# if __name__ == "__main__":
+#     # Test cases
+#     variables = {
+#         "x": 5,
+#         "y": 10,
+#         "z": 3,
+#         "flag": False,
+#         "name": "Sagnik"
+#     }
     
     test_cases = [
 #         "(x add y) multiply 2",
@@ -75,16 +75,16 @@ if __name__ == "__main__":
 #         "'Hi ' + name + '!'",
 #         "'Hello' + ' ' + 'World!'",
 #         "'Hello' contains 'ell'"
-            '"Checking if " + x + " is divisible by " + y',
-            'x less 0'
+            # '"Checking if " + x + " is divisible by " + y',
+            # 'x less 0'
 
     ]
     
-    evaluator = NaturalLanguageEvaluator()
+    # evaluator = NaturalLanguageEvaluator()
     
-    print("Testing Expression Evaluator:")
-    print("-" * 40)
+    # print("Testing Expression Evaluator:")
+    # print("-" * 40)
     
-    for expr in test_cases:
-        result = evaluator.evaluate(expr, variables)
-        print(f"{expr:35} = {result}")
+    # for expr in test_cases:
+    #     result = evaluator.evaluate(expr, variables)
+    #     print(f"{expr:35} = {result}")
