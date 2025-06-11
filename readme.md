@@ -22,7 +22,7 @@ Inspired by the rhythms of everyday language, ZENOLang lets you write code that 
   - `stop` (to break loops)
   - `repeat counting i start to end`
   - `repeat each item in list ` (supports list operations)
-  
+
 - **Indentation-based block parsing**
 - **Variable support:** numbers, booleans, and strings
 - **Automatic type conversion** for output and concatenation
@@ -181,7 +181,7 @@ We welcome contributions! Whether you're fixing bugs, adding features, or improv
 
 ## License
 
-[Add your license information here]
+This project is licensed under the [MIT License](LICENSE) © 2025 Sagnik Chakraborty.
 
 ---
 
