@@ -48,6 +48,7 @@ class NaturalLanguageEvaluator:
 
 # Convenience function for direct use
 def evaluate_expression(expression: str, variables: Dict[str, Any] = None) -> Any:
+    # sourcery skip: remove-unreachable-code
     """Convenience function for direct expression evaluation"""
     evaluator = NaturalLanguageEvaluator()
     return evaluator.evaluate(expression, variables)

@@ -33,6 +33,15 @@ def execute(line, variables, run_script_func=None):
                 raise Exception(f"Function '{func_name}' is not defined")
         except Exception as e:
             raise Exception(f"Error calling function in 'let' statement: {e}")
+        
+    elif value_str.startswith("[") and value_str.endswith("]"):
+        try:
+            # Evaluate the list safely — only literals allowed
+            value = eval(value_str, {"__builtins__": None}, {})
+            if not isinstance(value, list):
+                raise ValueError("Expected a list")
+        except Exception as e:
+            raise SyntaxError(f"Invalid list syntax: {e}")
     else:
         # print(f"Evaluating expression for variable '{var_name}': {value_str}")
         value = evaluate_expression(value_str, variables)

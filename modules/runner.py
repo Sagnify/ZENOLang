@@ -1,5 +1,5 @@
 
-from . import let, say, ask, if_else, while_, for_
+from . import let, say, ask, if_else, while_, for_, list_operations
 from .exception_case import BreakLoop
 from . import function_handler
 from .function_handler import ReturnValue
@@ -191,6 +191,51 @@ def run_script(lines, variables):  # sourcery skip: use-contextlib-suppress
                     pass
 
                 i = j
+            
+            elif stripped.startswith("repeat each "):
+                indent = get_indent_level(lines[i])
+                
+                # Use your new evaluator
+                var_name, iterable = for_.evaluate_list_loop(stripped, variables)
+
+                # Collect the repeat block
+                repeat_block = []
+                j = i + 1
+                while j < len(lines):
+                    current_line = lines[j].strip()
+                    if not current_line or current_line.startswith('#') or current_line.startswith('//'):
+                        j += 1
+                        continue
+
+                    current_indent = get_indent_level(lines[j])
+                    if current_indent <= indent:
+                        break
+
+                    repeat_block.append(lines[j])
+                    j += 1
+
+                # Execute block for each item
+                try:
+                    for val in iterable:
+                        variables[var_name] = val
+                        if repeat_block:
+                            try:
+                                run_script(repeat_block, variables)
+                            except BreakLoop:
+                                break
+                            except ReturnValue:
+                                raise
+                except BreakLoop:
+                    pass
+
+                i = j
+            elif (stripped.startswith("add ") or 
+                stripped.startswith("remove ") or 
+                stripped.startswith("length of ") or
+                (" at " in stripped and " in " in stripped)):
+                list_operations.handle_list_command(stripped, variables)
+                i += 1
+
 
             elif stripped.startswith('stop'):
                 raise BreakLoop()

@@ -48,6 +48,28 @@ def evaluate(line, variables):
     return var_name, start_value, end_value, step
 
 
+def evaluate_list_loop(line, variables):
+    # Expected: repeat each item in mylist
+    if not line.startswith("repeat each "):
+        raise SyntaxError("Invalid syntax in 'repeat each' command.")
+
+    line = line[len("repeat each "):].strip()
+
+    if " in " not in line:
+        raise SyntaxError("Missing 'in' in 'repeat each' command.")
+
+    var_name, list_name = map(str.strip, line.split(" in ", 1))
+
+    if list_name not in variables:
+        raise NameError(f"List variable '{list_name}' is not defined.")
+
+    iterable = variables[list_name]
+    if not isinstance(iterable, list):
+        raise TypeError(f"Variable '{list_name}' is not a list.")
+
+    return var_name, iterable
+
+
 # def handle_repeat_block(lines, i, variables):
 #     header = lines[i]
 #     i += 1  # move to body
