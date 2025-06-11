@@ -2,10 +2,11 @@ import re
 from .evaluator.main import NaturalLanguageEvaluator
 from .evaluator.context import get_evaluator
 
-evaluator = get_evaluator()
+
 
 
 def check_condition(expr: str, variables: dict) -> bool:
+    evaluator = get_evaluator()
     evaluate_expression = evaluator.evaluate
     expr = expr.strip()
 

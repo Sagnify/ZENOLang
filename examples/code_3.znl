@@ -1,0 +1,31 @@
+let counter be 0
+
+while counter less 20 then
+    say "Counter is: " + counter
+    if counter greater 6 then
+        stop
+    else
+        let counter be (counter add 1)
+        say counter
+
+let l1 be [1,2,3,4,5]
+say "your list is "+l1
+
+let it be [10, 20, 30]
+
+repeat each val in it
+    say val
+
+let items be [1, 2, 3]
+
+add 4 to items
+say items    
+
+remove 2 from items
+say items    
+
+length of items
+say _last_length    
+
+val at 1 in items
+say val    

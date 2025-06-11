@@ -1,8 +1,8 @@
 from . import runner
 from .evaluator.context import get_evaluator
 
-evaluator = get_evaluator()
-evaluate_expression = evaluator.evaluate
+# evaluator = get_evaluator()
+# evaluate_expression = evaluator.evaluate
 
 def resolve_value(val, variables):
     try:

@@ -2,10 +2,11 @@ import re
 from .evaluator.main import NaturalLanguageEvaluator
 from . import function_handler
 
-evaluator = NaturalLanguageEvaluator()
-evaluate_expression = evaluator.evaluate
+
 
 def execute(line, variables, run_script_func=None):
+    evaluator = NaturalLanguageEvaluator()
+    evaluate_expression = evaluator.evaluate
     parts = line[4:].split(" be ")
     if len(parts) != 2:
         raise SyntaxError("Invalid syntax in 'let' command")

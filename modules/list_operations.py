@@ -3,10 +3,11 @@ import re
 
 from .evaluator.context import get_evaluator
 
-evaluator = get_evaluator()
-evaluate_expression = evaluator.evaluate
+
 
 def handle_list_command(line, variables):
+    evaluator = get_evaluator()
+    evaluate_expression = evaluator.evaluate
     if line.startswith("add "):
         match = re.match(r"add (.+) to (.+)", line)
         if not match:

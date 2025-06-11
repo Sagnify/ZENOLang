@@ -1,9 +1,10 @@
 from .evaluator.context import get_evaluator
 
-evaluator = get_evaluator()
-evaluate_expression = evaluator.evaluate
+
 
 def execute(line, variables):
+    evaluator = get_evaluator()
+    evaluate_expression = evaluator.evaluate
     parts = line.split(" ", 1)
 
     if len(parts) != 2:
